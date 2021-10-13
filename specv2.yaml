@@ -1,0 +1,82 @@
+---
+openapi: "3.0.0"
+info:
+  description: "OpenAPI Specification for the Translate API"
+  version: "1.0.0"
+  title: "Translate API"
+servers:
+- url: "https://apx.ankurshukla-demos.com/v1/translate"
+security:
+- GrantTypes:
+  - "openid"
+  - "profile"
+  - "offline_access"
+  - "customScope"
+paths:
+  /:
+    post:
+      summary: "Translate text"
+      operationId: "translate"
+      description: "Send a request with the text to translate"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request-body"
+        description: "Request payload in application/json format."
+        required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response-body"
+components:
+  securitySchemes:
+    GrantTypes:
+      type: "oauth2"
+      description: "OAuth API"
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://apx.ankurshukla-demos.com/v1/idp/oauth/authorize"
+          tokenUrl: "https://apx.ankurshukla-demos.com/v1/idp/oauth/token"
+          scopes:
+            offline_access: "offline_access"
+            profile: "profile"
+            openid: "openid"
+        clientCredentials:
+          tokenUrl: "https://apx.ankurshukla-demos.com/v1/idp/oauth/token"
+          scopes:
+            customScope: "Custom Scope"
+  schemas:
+    request-body:
+      type: "object"
+      required:
+      - "q"
+      properties:
+        q:
+          type: "string"
+          description: "Input Text to Translate"
+        source:
+          type: "string"
+          description: "Source Language 2 Letter code"
+          default: en
+        target:
+          type: "string"
+          description: "Target Language 2 Letter code"
+          default: hi
+        format:
+          type: "string"
+    response-body:
+      type: "object"
+      properties:
+        data:
+          type: "object"
+          properties:
+            translations:
+              items:
+                type: "object"
+                properties:
+                  translatedText:
+                    type: "string"
